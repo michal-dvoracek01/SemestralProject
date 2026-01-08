@@ -18,15 +18,36 @@ This repository contains a full pipeline that:
 
   - Modeling: Trains an Ordinary Least Squares (OLS) Linear Regression model to identify price drivers.
 
-## 📂 Project Structure
-├── Estate_PRG.ipynb                      # Main analysis notebook (EDA, Visualization, and OLS Modeling)
-├── README.md                             # Project documentation
-├── data_estate_processed_06012026.csv    # Final cleaned dataset ready for machine learning (Snapshot: Jan 6, 2026)
-├── data_preprocessing.py                 # ETL script (not done yet)
-├── metro_stations.csv                    # Dataset with GPS coordinates for all Prague Metro stations
-├── notebook_scraping.ipynb               # Notebook used to execute the initial scraping workflow
-├── requirements.txt                      # List of Python dependencies (pandas, googlemaps, sklearn, etc.)
-└── scraping_functions.py                 # Script containing Sreality API and Google Locations API scraping logic
+## 📁 Project Structure
+
+- **Estate_PRG.ipynb**  
+  Main analysis notebook (EDA, visualization, OLS modeling)
+
+- **README.md**  
+  Project documentation and usage instructions
+
+- **data_estate_processed_06012026.csv**  
+  Final cleaned and feature-engineered dataset  
+  (Snapshot: January 6, 2026, ready for machine learning)
+
+- **data_preprocessing.py**  
+  ETL pipeline for data cleaning and feature engineering  
+  *(Work in progress)*
+
+- **metro_stations.csv**  
+  GPS coordinates of all Prague metro stations  
+  (used for distance-based features)
+
+- **notebook_scraping.ipynb**  
+  Notebook used to run and debug the initial data scraping workflow
+
+- **scraping_functions.py**  
+  Scraping logic:
+  - Sreality.cz API
+  - Google Places / Locations API
+
+- **requirements.txt**  
+  Python dependencies  
 
 ## ⚠️ Disclaimer
 This project is for educational purposes only.
