@@ -1,54 +1,101 @@
-## 🏠 Prague Real Estate Price Predictor and Metro Index
-A comprehensive end-to-end data science project that scrapes real estate listings from Sreality.cz, integrates geospatial data from the Prague Metro system (via Google Maps API), and creates a Linear Regression model to predict apartment prices in Prague.
+# Prague Real Estate Price Predictor and Metro Index
 
-## 📋 Project Overview
-This repository contains a full pipeline that:
+A data science project analyzing real estate prices in Prague based on proximity to metro stations.
 
-- Scrapes Data: Fetches thousands of real estate listings asynchronously from Sreality.cz (the largest Czech real estate portal).
+## Project Overview
 
-- Geolocates: Uses the Google Maps API to get exact GPS coordinates for all Prague Metro stations.
+This project:
+- Scrapes apartment listings from Sreality.cz (Czech real estate portal)
+- Calculates distances to Prague Metro stations (Lines A, B, C)
+- Analyzes price differences by metro station and line
+- Builds a Linear Regression model to predict apartment prices
 
-- Feature Engineering:
+## Repository Structure
+    
+```
+├── Estate_PRG.ipynb              # Main analysis notebook (run this!)
+├── data/
+│   ├── data_estate_processed_06012026.csv  # Processed dataset (ready to use)
+│   └── metro_stations.csv        # Metro station coordinates
+├── scraping_functions.py         # Step 1: Scrape basic listings from Sreality API
+├── scrape_estate_details.py      # Step 2: Scrape additional details (floor, elevator)
+├── data_preprocessing.py         # Step 3: Process raw data → final CSV
+├── notebook_scraping.ipynb       # Scraping development notebook
+├── requirements.txt              # Python dependencies
+└── README.md
+```
 
-  - Calculates the Haversine distance from every apartment to every metro station.
+## How to Run
 
-  - Identifies the nearest station and specific line (A, B, C).
+### Environment Setup
+```bash
+# Create virtual environment
+python3 -m venv venv
 
-  - Parses complex JSON metadata (floor, usable area, building material, ownership).
+# Activate it
+# On macOS/Linux:
+source venv/bin/activate
+# On Windows:
+venv\Scripts\activate
 
-  - Modeling: Trains an Ordinary Least Squares (OLS) Linear Regression model to identify price drivers.
+# Install dependencies
+pip install -r requirements.txt
+```
 
-## 📁 Project Structure
+### Run the Analysis
+```bash
+# Run the main analysis notebook
+jupyter notebook Estate_PRG.ipynb
+```
 
-- **Estate_PRG.ipynb**  
-  Main analysis notebook (EDA, visualization, OLS modeling)
+The notebook uses pre-processed data (`data/data_estate_processed_06012026.csv`) and runs without any additional setup.
 
-- **README.md**  
-  Project documentation and usage instructions
+### Fresh Data (Optional)
 
-- **data_estate_processed_06012026.csv**  
-  Final cleaned and feature-engineered dataset  
-  (Snapshot: January 6, 2026, ready for machine learning)
+If you want to scrape fresh data instead of using the provided dataset:
 
-- **data_preprocessing.py**  
-  ETL pipeline for data cleaning and feature engineering  
-  *(Work in progress)*
+```bash
+# Step 1: Scrape basic listings from Sreality
+python scraping_functions.py
 
-- **metro_stations.csv**  
-  GPS coordinates of all Prague metro stations  
-  (used for distance-based features)
+# Step 2: Fetch additional details (floor, elevator, etc.)
+python scrape_estate_details.py
 
-- **notebook_scraping.ipynb**  
-  Notebook used to run and debug the initial data scraping workflow
+# Step 3: Process into final format
+python data_preprocessing.py
 
-- **scraping_functions.py**  
-  Scraping logic:
-  - Sreality.cz API
-  - Google Places / Locations API
+# Step 4: Run analysis
+jupyter notebook Estate_PRG.ipynb
+```
 
-- **requirements.txt**  
-  Python dependencies  
+**Notes:**
+- `metro_stations.csv` is pre-provided (metro stations are static infrastructure). Regenerating it requires Google Maps API credentials.
+- Sreality listings change daily, so fresh scraping will produce different (but similar) results.
+- The notebook automatically uses freshly processed data if available.
 
-## ⚠️ Disclaimer
+## Data Description
+
+The dataset contains ~2800 apartment listings with features:
+- **Price**: Total price in CZK
+- **Area**: Usable area in m²
+- **Location**: GPS coordinates, district (Praha 1-10)
+- **Building**: Type (panel, brick, etc.), floor number
+- **Amenities**: Elevator, terrace
+- **Metro**: Distance to nearest station on each line (A, B, C)
+
+## Analysis Results
+
+- Most expensive stations are in the center: Malostranská (198k/m²), Muzeum (193k/m²), Náměstí Míru (192k/m²)
+- Cheapest stations: Hlavní nádraží (123k/m²), Černý Most (132k/m²), Letňany (137k/m²)
+- Metro line matters less than I expected - only ~3% difference between Line A and C
+- Apartment area is the strongest predictor of price (correlation 0.66)
+- See Estate_PRG.ipynb for more details
+
+## Requirements
+
+- Python 3.9+
+- See `requirements.txt` for packages
+
+## Disclaimer
+
 This project is for educational purposes only.
-
