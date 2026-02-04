@@ -247,19 +247,29 @@ def assign_nearest_metro(
 
 
 if __name__ == "__main__":
-
-    API_KEY = get_secret(
-    project_id="325399643255",
-    secret_id="API_KEY_Google"
-    )
-    metro_df = load_metro_data(API_KEY)
+    import os
+    
+    # Metro stations - use existing file or regenerate with Google Maps API
+    if os.path.exists("data/metro_stations.csv"):
+        print("data/metro_stations.csv already exists, skipping Google Maps API call")
+        metro_df = pd.read_csv("data/metro_stations.csv")
+    else:
+        print("Generating metro stations (requires Google Maps API key)...")
+        API_KEY = get_secret(
+            project_id="325399643255",
+            secret_id="API_KEY_Google"
+        )
+        metro_df = load_metro_data(API_KEY)
+        metro_df.to_csv("data/metro_stations.csv", index=False)
+    
     print("\nMetro data preview:")
     print(metro_df.head())
-
+    
+    # Scrape Sreality listings (no API key needed)
+    print("\nScraping Sreality listings...")
     sreality_df = sreality_scrape()
     print("\nSreality data preview:")
     print(sreality_df.head())
-
-    metro_df.to_csv("metro_stations.csv", index=False)
-    sreality_df.to_csv("sreality_flats.csv", index=False)
-    print("\nData saved to CSV files.")
+    
+    sreality_df.to_csv("data/sreality_flats.csv", index=False)
+    print("\nData saved to data/sreality_flats.csv")
