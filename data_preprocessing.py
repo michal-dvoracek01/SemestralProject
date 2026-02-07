@@ -1,18 +1,6 @@
 """
-Data Preprocessing Pipeline for Prague Real Estate Analysis
-
-This script processes raw scraped data into the final analysis-ready CSV.
-It extracts features, calculates metro distances, and encodes categorical variables.
-
-Usage:
-    python data_preprocessing.py
-
-Input files required:
-    - data/data_estate.csv (raw data with details from scraping)
-    - data/metro_stations.csv (metro station coordinates)
-
-Output:
-    - data/data_estate_processed.csv (ready for analysis)
+Data preprocessing for Prague real estate analysis.
+Processes raw scraped data into final CSV for analysis.
 """
 
 import pandas as pd
@@ -31,12 +19,7 @@ def safe_eval(x):
 
 
 def extract_details(detail_str):
-    """
-    Extract property details from the API response detail field.
-    
-    Extracts: usable_area, total_area, floor, building_type, 
-              building_condition, ownership, terrace, elevator
-    """
+    """Extract property details from API response."""
     details_list = safe_eval(detail_str)
     if not isinstance(details_list, list):
         return {}
@@ -73,13 +56,7 @@ def extract_details(detail_str):
 
 
 def extract_floor_num(floor_str):
-    """
-    Convert floor string to numeric value.
-    
-    Handles: 'přízemí' (ground floor) -> 0
-             'suterén' (basement) -> -1
-             '2. patro' -> 2
-    """
+    """Convert floor string to number (přízemí=0, suterén=-1, etc)."""
     if not isinstance(floor_str, str):
         return 0
     floor_str = floor_str.lower()
@@ -94,9 +71,7 @@ def extract_floor_num(floor_str):
 
 
 def haversine(lon1, lat1, lon2, lat2):
-    """
-    Calculate the great circle distance between two points on earth (in meters).
-    """
+    """Distance between two GPS points in meters."""
     lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
     
     dlon = lon2 - lon1 
@@ -108,11 +83,7 @@ def haversine(lon1, lat1, lon2, lat2):
 
 
 def get_metro_distances(row, metro_df):
-    """
-    Calculate distance from apartment to nearest station on each metro line.
-    
-    Returns distances to lines A, B, C and the name of the nearest station.
-    """
+    """Calculate distance to nearest metro station on each line (A, B, C)."""
     flat_lat = row['latitude']
     flat_lon = row['longitude']
     
@@ -136,9 +107,8 @@ def get_metro_distances(row, metro_df):
         dist = haversine(flat_lon, flat_lat, station_lng, station_lat)
         
         col_name = f'dist_{station_line}'
-        if col_name in results:
-            if dist < results[col_name]:
-                results[col_name] = dist
+        if col_name in results and dist < results[col_name]:
+            results[col_name] = dist
         
         if dist < results['global_min_dist']:
             results['global_min_dist'] = dist
@@ -153,21 +123,7 @@ def get_metro_distances(row, metro_df):
 
 
 def process_raw_data(raw_data_path, metro_path, output_path=None):
-    """
-    Main processing function. Transforms raw scraped data into analysis-ready format.
-    
-    Args:
-        raw_data_path: Path to raw estate data CSV
-        metro_path: Path to metro stations CSV
-        output_path: Where to save output (optional)
-    
-    Returns:
-        Processed DataFrame
-    
-    Raises:
-        FileNotFoundError: If input files don't exist
-        ValueError: If required columns are missing
-    """
+    """Main function - transforms raw data into analysis-ready format."""
     # Load data with error handling
     print("Loading data...")
     try:
@@ -198,7 +154,7 @@ def process_raw_data(raw_data_path, metro_path, output_path=None):
     # Remove rows without price
     df = df.dropna(subset=['price_czk'])
     df = df.reset_index(drop=True)
-    print(f"After removing missing prices: {len(df)} records")
+    print(f"Records after price filter: {len(df)}")
     
     # Extract locality info
     print("Extracting locality...")
