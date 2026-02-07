@@ -4,11 +4,7 @@ A data science project analyzing real estate prices in Prague based on proximity
 
 ## Project Overview
 
-This project:
-- Scrapes apartment listings from Sreality.cz (Czech real estate portal)
-- Calculates distances to Prague Metro stations (Lines A, B, C)
-- Analyzes price differences by metro station and line
-- Builds a Linear Regression model to predict apartment prices
+We scraped apartment listings from Sreality.cz and analyzed how prices relate to metro station proximity. The main goal was to build a regression model to predict apartment prices based on location, size, and distance to metro.
 
 ## Repository Structure
     
@@ -68,10 +64,7 @@ python data_preprocessing.py
 jupyter notebook Estate_PRG.ipynb
 ```
 
-**Notes:**
-- `metro_stations.csv` is pre-provided (metro stations are static infrastructure). Regenerating it requires Google Maps API credentials.
-- Sreality listings change daily, so fresh scraping will produce different (but similar) results.
-- The notebook automatically uses freshly processed data if available.
+Note: `metro_stations.csv` is already provided since metro stations don't change. Regenerating requires Google Maps API. Sreality data changes daily so fresh scraping gives slightly different results.
 
 ## Data Description
 
@@ -89,13 +82,5 @@ The dataset contains ~2800 apartment listings with features:
 - Cheapest stations: Hlavní nádraží (123k/m²), Černý Most (132k/m²), Letňany (137k/m²)
 - Metro line matters less than I expected - only ~3% difference between Line A and C
 - Apartment area is the strongest predictor of price (correlation 0.66)
-- See Estate_PRG.ipynb for more details
-
-## Requirements
-
-- Python 3.9+
-- See `requirements.txt` for packages
-
-## Disclaimer
-
-This project is for educational purposes only.
+- Linear regression model achieved R² = 0.78 (RMSE ~3.7M CZK)
+- Analysis details are in the Estate_PRG.ipynb notebook
