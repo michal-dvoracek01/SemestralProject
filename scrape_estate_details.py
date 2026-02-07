@@ -53,22 +53,14 @@ if __name__ == "__main__":
     try:
         from scraping_functions import sreality_scrape
         
-        print("Step 1: Getting basic estate data...")
         basic_data = sreality_scrape()
         
         if 'hash_id' not in basic_data.columns:
             raise ValueError("Missing hash_id column in scraped data")
         
         hash_ids = basic_data["hash_id"].tolist()
-        print(f"Found {len(hash_ids)} estates")
-        
-        print(f"\nStep 2: Fetching details for {len(hash_ids)} estates...")
         details_df = scrape_details_for_estates(hash_ids)
-        
-        # Merge basic data with details
         merged = details_df.merge(basic_data, on='hash_id', how='left')
-        
-        print(f"\nDone! {len(merged)} records with details.")
         merged.to_csv("data/data_estate.csv", index=False)
         print("Saved to data/data_estate.csv")
         
